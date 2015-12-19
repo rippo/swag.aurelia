@@ -1,0 +1,68 @@
+<template>
+  <require from="./valueconvertors/sort"></require> 
+  <require from="./valueconvertors/filterwinners"></require> 
+  <section>
+
+    <div class="row">
+      <div class="div-md-12">
+        <h2>${heading}</h2>
+        <select ref="direction">
+          <option value="ascending">Ascending</option>
+          <option value="descending">Descending</option>
+        </select>
+        <button class="btn btn-lg btn-primary" disabled.bind="!swagEnabled"  
+          click.delegate="random()">Swag</button>
+      </div> 
+    </div> 
+
+
+    <div class="row" show.bind="currentWinner !== null">
+      <h2>Last Winner</h2>
+      <div class="col-sm-4 col-md-3 card-container">
+        <div class="currentWinner card">
+          ${currentWinner.name} - ${currentWinner.SwagThing.item}
+        </div>
+      </div>
+    </div>
+
+    <div class="row au-stagger" id="winnerList" show.bind="currentWinner !== null">
+      <h2>Winners</h2>
+      <div class="col-sm-4 col-md-3 card-container" 
+         repeat.for="user of winnerList">
+        <div class="card" data-id="${user.MemberId}">
+          <canvas class="header-bg" width="250" height="70"></canvas>
+          <div class="close" click.trigger="removeWinner(user)">X</div>
+          <div class="avatar">
+            <img src.bind="user.image" />
+          </div>
+          <div class="content">
+            <p class="name">${user.name} - ${currentWinner.SwagThing.item}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="row au-stagger" id="attendeeList">
+      <h2>Attendees</h2>
+      <div class="col-sm-4 col-md-3 card-container" 
+         repeat.for="attendee of attendeeList | sort: { propertyName: 'name', direction: direction.value }">
+        <div class="card" data-id="${attendee.memberId}">
+          <canvas class="header-bg" width="250" height="70"></canvas>
+          <div class="close" click.trigger="removeAttendee(attendee)">X</div>
+          <div class="avatar">
+            <img src.bind="attendee.image" />
+          </div>
+          <div class="content">
+            <p class="name">${attendee.name}</p>
+          </div>
+        </div>
+      </div>
+     
+    <button class="btn btn-sm btn-primary" disabled.bind="!undoAttendeeEnabled"  
+      click.delegate="undohandler()">Undo (${undoAttendeeList.length})</button>
+ 
+    </div>
+  </section>
+</template>
