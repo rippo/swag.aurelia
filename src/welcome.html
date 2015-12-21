@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div class="row au-stagger" id="winnerList" show.bind="currentWinner !== null">
+    <div class="row au-stagger" id="winnerList" show.bind="winnerList.length > 0">
       <h2>Winners</h2>
       <div class="col-sm-4 col-md-3 card-container" 
          repeat.for="user of winnerList">
@@ -36,7 +36,7 @@
             <img src.bind="user.image" />
           </div>
           <div class="content">
-            <p class="name">${user.name} - ${currentWinner.SwagThing.item}</p>
+            <p class="name">${user.name} - ${user.swagThing.item}</p>
           </div>
         </div>
       </div>

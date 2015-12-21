@@ -6,23 +6,46 @@ import {BaseConfig} from './baseConfig';
 export class Swag {
 
   constructor(config) {
-    this.config = config ;
+    this.config = config;
   }
+  
 
+  randomThing() {
 
-  random() {
+    //console.log("swagging...")
+
+    this.config.current.defaultSwag.forEach(function(element) {
+        console.log(element.item, element.won);
+    }, this);  
     
     //get swag not won
-    var unusedSwagList = this.config.current.defaultSwag.filter(function(a){ return !a.won});
+    var swagList  = this.config.current.defaultSwag.filter(function(a){ 
+        return (a.won === false)
+    });
+
+    //console.log("swaglist len", swagList.length);
  
     //random swag index
-    var random = Math.floor(Math.random() * unusedSwagList.length);
+    var random = Math.floor(Math.random() * swagList.length);
+
+    //console.log("random", random);
  
     //get swag thing and set it as won
-    var swagThing = unusedSwagList[random];
-    this.config.current.defaultSwag[random].won = true;
+    var swagThing = swagList[random];
+    //console.log(swagThing.item);
+    swagList[random].won = true;
+
+    //console.log(this.config.current.defaultSwag);
 
     return swagThing;
+  }
+  
+  countUnwon() {
+    var swagList  = this.config.current.defaultSwag.filter(function(a){ 
+        return (a.won === false)
+    });
+    //console.log(swagList.length);
+    return swagList.length;
   }
 
 }

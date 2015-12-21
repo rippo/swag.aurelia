@@ -1,3 +1,8 @@
+/*
+Would like to change the observerLocator to the BindingEngin but initially I couldnlt get it to work
+http://stackoverflow.com/questions/30283569/array-subscription-in-aurelia/30286225#comment56507826_30286225
+*/
+
 import {ObserverLocator, inject} from 'aurelia-framework';
 //import {HttpClient} from 'aurelia-fetch-client';
 //import 'fetch';
@@ -19,7 +24,6 @@ export class Test {
     //this.http = http;
     //this.storage = storage;
     this.swag = swag;
-    this.observerLocator = observerLocator; 
     this.clone = clone;
     
     //this.storage.set("test", "rippo");
@@ -31,14 +35,46 @@ export class Test {
     this.swagEnabled = true;
     this.currentWinner = null;
     this.winnerList = [];
-    //  this.attendeeList = [];
-    this.undoAttendeeList = [];
     this.attendeeList = config.current.tempAttendees;
+    this.undoAttendeeList = [];
 
-
-    let subscribeToArray = this.observerLocator.getArrayObserver(this.attendeeList);
-    subscribeToArray.subscribe(this.listChanged);
+    // subscribe
     
+    observerLocator
+      .getArrayObserver(this.attendeeList)
+      .subscribe(splices => {
+          //Get removed item
+          var item = this.clone.copy(splices[0].removed[0]);
+          //Get random piece of swag
+          item.swagThing = this.swag.randomThing();
+
+          //push to winner list
+          this.winnerList.push(item);
+
+          //Should swag button be disabled?
+          this.swagEnabled = (this.attendeeList.length > 0) && (this.swag.countUnwon() > 0);
+
+      });
+
+//  
+      // let subscription = bindingEngine.collectionObserver(this.attendeeList)
+      //.subscribe(splices => console.log(splices));
+
+    // unsubscribe
+    //subscription.dispose();
+ 
+//     var subscription = bindingEngine.collectionObserver(this.attendeeList)
+//       .subscribe(
+//           splices =>  {
+//               console.log(clone);
+//               console.log(splices);
+//           }
+//       );
+// 
+//     // unsubscribe
+//     subscription.dispose();    
+
+
 
     // http.configure(config => {
     //   config
@@ -47,11 +83,6 @@ export class Test {
     // });
   }
 
-  listChanged(splices) {
-    var winner = this.clone.copy(splices[0].removed[0]);
-    console.log(winner);
-    this.winnerList.push(winner);
-  }
 
   activate() {
     // return this.http.fetch('home/memberlist')
@@ -63,9 +94,6 @@ export class Test {
   removeAttendee(user) {
     if (this.undoAttendeeList.length === 0)
       this.undoAttendeeEnabled = true;
-    
-    
-    //this.undoAttendeeList.splice(index, 1, user)
     
     this.undoAttendeeList.push(user);
     this.attendeeList = this.attendeeList.filter(function(item) {
@@ -95,29 +123,9 @@ export class Test {
   //Selects random winner
   random() {
     
-    
     //get random memberId from attendee list    
     var random = Math.floor(Math.random() * $('#attendeeList .card').length);
     this.attendeeList.splice(random, 1);
-    //var memberId = this.attendeeList[random].MemberId;
-
-    //set as current user
-    //var winner = this.attendeeList.filter(function(a){ return a.MemberId == memberId })[0];
-    //this does not work as intended!
-    //winner.swagThing = this.swag.random();
-    //winner.wonSwag = true;
-    //this.currentWinner = winner;
-
-    //push attendee to winner list
-    //this.winnerList.push(this.currentWinner);
-
-    //remove user from attendee list    
-    //this.attendeeList = this.attendeeList.filter(function(item) {
-    // return (item.MemberId !== memberId);
-    //});
-
-    //disable button if we have no one left to give swag to    
-    //this.swagEnabled = this.attendeeList.length > 0;
-    
+ 
   }
 };
