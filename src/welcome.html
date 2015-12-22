@@ -1,7 +1,7 @@
 <template>
-  <require from="./valueconvertors/sort"></require> 
-  <require from="./valueconvertors/filterwinners"></require> 
   <require from="./winner"></require> 
+  <require from="./attendees"></require> 
+
   <section>
 
     <div class="row">
@@ -16,29 +16,10 @@
       </div> 
     </div> 
 
+    
     <winner></winner>
+    <attendees></attendees>
 
 
-
-    <div class="row au-stagger" id="attendeeList">
-      <h2>Attendees</h2>
-      <div class="col-sm-4 col-md-3 card-container" 
-         repeat.for="attendee of attendeeList | sort: { propertyName: 'name', direction: direction.value }">
-        <div class="card" data-id="${attendee.memberId}">
-          <canvas class="header-bg" width="250" height="70"></canvas>
-          <div class="close" click.trigger="removeAttendee(attendee)">X</div>
-          <div class="avatar">
-            <img src.bind="attendee.image" />
-          </div>
-          <div class="content">
-            <p class="name">${attendee.name}</p>
-          </div>
-        </div>
-      </div>
-     
-    <button class="btn btn-sm btn-primary" disabled.bind="!undoAttendeeEnabled"  
-      click.delegate="undohandler()">Undo (${undoAttendeeList.length})</button>
- 
-    </div>
   </section>
 </template>

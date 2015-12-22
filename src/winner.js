@@ -5,12 +5,12 @@ import {EventAggregator} from 'aurelia-event-aggregator';
 export class Winner {
 
     constructor(eventAggregator) { 
-        this.ea = eventAggregator;
+        this.eventAggregator = eventAggregator;
         this.currentWinner = null;
         this.winnerList = [];
         
-        this.ea.subscribe('add.winner', (item) => {
-            console.log(item);
+        this.eventAggregator.subscribe('add.winner', (item) => {
+            //console.log(item);
             this.winnerList.push(item);
         }); 
     }
@@ -21,8 +21,8 @@ export class Winner {
             return (item !== user);
         });
 
-        this.attendeeList.push(user);
-        this.swagEnabled = true;
+        this.eventAggregator.publish("remove.winner", user);
+        this.eventAggregator.publish('change.swag.button.state', true);
     }
  
 };
