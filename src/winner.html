@@ -1,0 +1,19 @@
+<template>
+      <div class="row au-stagger" id="winnerList" show.bind="winnerList.length > 0">
+      <h2>Winners</h2>
+      <div class="col-sm-4 col-md-3 card-container" 
+         repeat.for="user of winnerList">
+        <div class="card" data-id="${user.MemberId}">
+          <canvas class="header-bg" width="250" height="70"></canvas>
+          <div class="close" click.trigger="removeWinner(user)">X</div>
+          <div class="avatar">
+            <img src.bind="user.image" />
+          </div>
+          <div class="content">
+            <p class="name">${user.name} - ${user.swagThing.item}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+</template>    

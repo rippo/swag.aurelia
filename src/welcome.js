@@ -1,5 +1,6 @@
 
 import {BindingEngine, inject} from 'aurelia-framework';
+import {EventAggregator} from 'aurelia-event-aggregator';
 //import {HttpClient} from 'aurelia-fetch-client';
 //import 'fetch';
 import {Storage} from './helpers/storage';
@@ -10,15 +11,16 @@ import $ from 'jquery';
 
 
 //@inject(HttpClient, Storage, Swag, ObserverLocator, BaseConfig)
-@inject(Swag, BindingEngine, BaseConfig, Clone)
+@inject(Swag, BindingEngine, BaseConfig, Clone, EventAggregator)
 
 export class Test {
 
     //constructor(http, storage) {
-    constructor(swag, bindingEngine, config, clone) {
+    constructor(swag, bindingEngine, config, clone, eventAggregator) {
 
         this.swag = swag;
         this.clone = clone;
+        this.eventAggregator = eventAggregator;
 
         //this.storage.set("test", "rippo");
 
@@ -26,8 +28,6 @@ export class Test {
 
         this.undoAttendeeEnabled = false;
         this.swagEnabled = true;
-        this.currentWinner = null;
-        this.winnerList = [];
         this.attendeeList = config.current.tempAttendees;
         this.undoAttendeeList = [];
 
@@ -44,7 +44,7 @@ export class Test {
     }
 
     attendeeListRemove(splices) {
-        //TODO Need to check actually if we have a removed splice!
+        //Need to check actually if we have a removed splice!
         
         //Get removed item
         var item = this.clone.copy(splices[0].removed[0]);
@@ -52,7 +52,7 @@ export class Test {
         item.swagThing = this.swag.randomThing();
 
         //push to winner list
-        this.winnerList.push(item);
+        this.eventAggregator.publish('add.winner', item);
 
         //Should swag button be disabled?
         this.swagEnabled = (this.attendeeList.length > 0) && (this.swag.countUnwon() > 0);
@@ -72,15 +72,6 @@ export class Test {
         this.attendeeList = this.attendeeList.filter(function (item) {
             return (item !== user);
         });
-    }
-
-    removeWinner(user) {
-        this.winnerList = this.winnerList.filter(function (item) {
-            return (item !== user);
-        });
-
-        this.attendeeList.push(user);
-        this.swagEnabled = true;
     }
 
 
