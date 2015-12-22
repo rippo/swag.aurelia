@@ -35,6 +35,19 @@ export class Swag {
     return swagThing;
   }
   
+  putBack(item) {
+    
+    console.log(item.swagThing.id);
+    
+    var swagItem  = this.config.current.defaultSwag.filter(function(a){ 
+        return (a.id === item.swagThing.id)
+    })[0];
+    
+    swagItem.won = false;
+    
+    //this.config.current.defaultSwag
+  }
+  
   countUnwon() {
     var swagList  = this.config.current.defaultSwag.filter(function(a){ 
         return (a.won === false)

@@ -9,9 +9,9 @@ export class BaseConfig {
     this._current = {
       storage: 'localStorage',
       defaultSwag: [ 
-        {item : "T-Shirt", won: false},
-        {item : "Bike", won: false},
-        {item : "Car", won: false}
+        {item : "T-Shirt", won: false, id: 1892},
+        {item : "Bike", won: false, id: 1891},
+        {item : "Car", won: false, id: 1723}
       ],
       tempAttendees: [
           { name: 'Ryan O', memberId: 100, image: 'https://s3.amazonaws.com/uifaces/faces/twitter/calebogden/128.jpg' },

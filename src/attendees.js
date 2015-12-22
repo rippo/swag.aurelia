@@ -1,4 +1,3 @@
-
 import {BindingEngine, inject} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
 //import {HttpClient} from 'aurelia-fetch-client';
@@ -49,10 +48,14 @@ export class Attendees {
 
     attendeeListChange(splices) {
         //Need to check actually if we have a removed splice!
-        console.log(splices);
-        
+        //console.log(splices);
+
+        //If we add a attendee        
         if (splices[0].addedCount > 0) {
-             this.attendeeList[splices[0].index].won = false;       
+             this.attendeeList[splices[0].index].won = false;
+             this.swag.putBack(this.attendeeList[splices[0].index]);
+             //this.attendeeList[splices[0].index].swagThing = null;
+             //need to put swag back into pot, need to mark user swag thing as null        
         }
         else {
         
