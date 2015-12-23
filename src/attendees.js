@@ -1,4 +1,4 @@
-import {BindingEngine, inject} from 'aurelia-framework';
+import {inject} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
 //import {HttpClient} from 'aurelia-fetch-client';
 //import 'fetch';
@@ -7,12 +7,11 @@ import {Clone} from './helpers/clone';
 import $ from 'jquery';
 
 
-@inject(BindingEngine, BaseConfig, Clone, EventAggregator)
+@inject(BaseConfig, Clone, EventAggregator)
 
 export class Attendees {
 
-    //constructor(http, storage) {
-    constructor(bindingEngine, config, clone, eventAggregator) {
+    constructor(config, clone, eventAggregator) {
 
         this.clone = clone;
         this.eventAggregator = eventAggregator;
@@ -22,14 +21,10 @@ export class Attendees {
         //this.storage.set("test", "rippo");
 
         this.undoAttendeeEnabled = false;
+        console.log(config.current.tempAttendees);
         this.attendeeList = config.current.tempAttendees;
         this.undoAttendeeList = [];
 
-
-        bindingEngine
-            .collectionObserver(this.attendeeList)
-            .subscribe(splices => this.attendeeListChange(splices));
-            
         // http.configure(config => {
         //   config
         //     .useStandardConfiguration()
@@ -38,63 +33,42 @@ export class Attendees {
     }
 
     swagclick() {
+        console.log($('#attendeeList .card').length);
         //get random memberId from attendee list    
         var random = Math.floor(Math.random() * $('#attendeeList .card').length);
-        this.attendeeList.splice(random, 1);
-    }
-
-    attendeeListChange(splices) {
-        //Need to check actually if we have a removed splice!
-        console.log(splices);
-
-        var attendee;
-
-        //If we added an attendee        
-        if (splices[0].addedCount > 0) {
-            
-             attendee = this.attendeeList[splices[0].index];
-             this.eventAggregator.publish("put.swag.back", attendee);
-  
-        }
-        else {
         
-            //TODO Is it safe to pass around the BOUND data object?
-            //  If so we can remove the clone function...
-            //Get removed item from the splice, and clone the orginal object
-            attendee = this.clone.copy(splices[0].removed[0]);
-
-            //publish the get.random.swag event
-            this.eventAggregator.publish("get.random.swag", attendee);
-        }
-        
-        this.eventAggregator.publish("get.count.unwon.swag", attendee);
-                 
+        var attendee = this.attendeeList.splice(random, 1)[0];
+        var clone = this.clone.copy(attendee);
+        this.eventAggregator.publish("get.random.swag", clone);
+        this.eventAggregator.publish("get.count.unwon.swag");
     }
 
     removeAttendee(attendee) {
+        //shouls we enable the undo button
         if (this.undoAttendeeList.length === 0)
             this.undoAttendeeEnabled = true;
 
+        //push to undo stack
         this.undoAttendeeList.push(attendee);
 
         //remove attendee from list
-        //TODO want to remove this filter and favour a linq based approach
-        this.attendeeList = this.attendeeList.filter(function (item) {
-            return (item.memberId !== attendee.memberId);
-        });
+        this.attendeeList.splice(this.attendeeList.indexOf(attendee), 1);
+
     }
 
     removeWinner(attendee) {
+        //console.log("remove winner");
         this.attendeeList.push(attendee);
+        this.eventAggregator.publish("put.swag.back", attendee);
     }
 
     undohandler() {
-        var attendee = this.clone.copy(this.undoAttendeeList.slice(-1).pop());
-        //console.log(attendee);
-        this.undoAttendeeList.pop();
-                
+        //pop back into attendee list
+        var attendee = this.undoAttendeeList.pop();
+        
         this.attendeeList.push(attendee);
-
+        
+        //disable undo button if no more undos left on stack
         if (this.undoAttendeeList.length === 0)
             this.undoAttendeeEnabled = false;
     }

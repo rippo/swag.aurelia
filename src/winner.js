@@ -9,9 +9,9 @@ export class Winner {
         this.currentWinner = null;
         this.winnerList = [];
         
-        this.eventAggregator.subscribe('add.winner', (item) => {
+        this.eventAggregator.subscribe('add.winner', (attendee) => {
             //console.log(item);
-            this.winnerList.push(item);
+            this.winnerList.push(attendee);
         }); 
     }
     
