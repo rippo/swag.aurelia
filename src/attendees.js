@@ -45,13 +45,15 @@ export class Attendees {
 
     attendeeListChange(splices) {
         //Need to check actually if we have a removed splice!
-        //console.log(splices);
+        console.log(splices);
+
+        var attendee;
 
         //If we added an attendee        
         if (splices[0].addedCount > 0) {
             
-             var item = this.attendeeList[splices[0].index];
-             this.eventAggregator.publish("put.swag.back", item);
+             attendee = this.attendeeList[splices[0].index];
+             this.eventAggregator.publish("put.swag.back", attendee);
   
         }
         else {
@@ -59,34 +61,39 @@ export class Attendees {
             //TODO Is it safe to pass around the BOUND data object?
             //  If so we can remove the clone function...
             //Get removed item from the splice, and clone the orginal object
-            var item = this.clone.copy(splices[0].removed[0]);
+            attendee = this.clone.copy(splices[0].removed[0]);
 
             //publish the get.random.swag event
-            this.eventAggregator.publish("get.random.swag", item);
+            this.eventAggregator.publish("get.random.swag", attendee);
         }
         
-        this.eventAggregator.publish("get.count.unwon.swag", item);
+        this.eventAggregator.publish("get.count.unwon.swag", attendee);
                  
     }
 
-    removeAttendee(user) {
+    removeAttendee(attendee) {
         if (this.undoAttendeeList.length === 0)
             this.undoAttendeeEnabled = true;
 
-        this.undoAttendeeList.push(user);
+        this.undoAttendeeList.push(attendee);
+
+        //remove attendee from list
+        //TODO want to remove this filter and favour a linq based approach
         this.attendeeList = this.attendeeList.filter(function (item) {
-            return (item !== user);
+            return (item.memberId !== attendee.memberId);
         });
     }
 
-    removeWinner(user) {
-        this.attendeeList.push(user);
+    removeWinner(attendee) {
+        this.attendeeList.push(attendee);
     }
 
     undohandler() {
-        var user = this.undoAttendeeList.slice(-1).pop();
+        var attendee = this.clone.copy(this.undoAttendeeList.slice(-1).pop());
+        //console.log(attendee);
         this.undoAttendeeList.pop();
-        this.attendeeList.push(user);
+                
+        this.attendeeList.push(attendee);
 
         if (this.undoAttendeeList.length === 0)
             this.undoAttendeeEnabled = false;

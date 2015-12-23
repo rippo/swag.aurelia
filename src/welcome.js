@@ -46,9 +46,7 @@ export class Welcome {
     
     //Selects random winner
     random() {
-
         this.eventAggregator.publish("swag.clicked");    
-
     }
     
 };

@@ -20,6 +20,8 @@ export class Swag {
     }
 
     getRandomSwag(winner) {
+        
+        console.log("get random winner");
 
         //get swag not won
         var swagList = this.swagList.filter(function (a) {
