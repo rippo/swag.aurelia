@@ -21,7 +21,6 @@ export class Attendees {
 
         //this.storage.set("test", "rippo");
 
-        //this.swagEnabled = true;
         this.undoAttendeeEnabled = false;
         this.attendeeList = config.current.tempAttendees;
         this.undoAttendeeList = [];
@@ -48,28 +47,26 @@ export class Attendees {
         //Need to check actually if we have a removed splice!
         //console.log(splices);
 
-        //If we add a attendee        
+        //If we added an attendee        
         if (splices[0].addedCount > 0) {
-             this.attendeeList[splices[0].index].won = false;
-             this.swag.putBack(this.attendeeList[splices[0].index]);
-             //this.attendeeList[splices[0].index].swagThing = null;
-             //need to put swag back into pot, need to mark user swag thing as null        
+            
+             var item = this.attendeeList[splices[0].index];
+             this.eventAggregator.publish("put.swag.back", item);
+  
         }
         else {
         
-            //Get removed item
+            //TODO Is it safe to pass around the BOUND data object?
+            //  If so we can remove the clone function...
+            //Get removed item from the splice, and clone the orginal object
             var item = this.clone.copy(splices[0].removed[0]);
-            //Get random piece of swag
-            //item.swagThing = this.swag.randomThing();
 
-            //call random swag event
+            //publish the get.random.swag event
             this.eventAggregator.publish("get.random.swag", item);
         }
         
-        //Should swag button be disabled?
-        //this.eventAggregator.publish('change.swag.button.state', 
-        //    ((this.attendeeList.length > 0) && (this.swag.countUnwon() > 0)));
-         
+        this.eventAggregator.publish("get.count.unwon.swag", item);
+                 
     }
 
     removeAttendee(user) {
@@ -94,5 +91,5 @@ export class Attendees {
         if (this.undoAttendeeList.length === 0)
             this.undoAttendeeEnabled = false;
     }
-    
+        
 };

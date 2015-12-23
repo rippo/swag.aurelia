@@ -11,25 +11,21 @@ export class Swag {
         this.eventAggregator = eventAggregator;
         this.swagList = this.config.current.defaultSwag;
 
-        this.eventAggregator.subscribe("get.random.swag", (item) => this.randomThing(item));
-
+        //TODO is pub/sub correct way to call into these functions?
+        //  Suppose if I inect Swag on attendees then I am tight coupling
+        //  This does loosly couple but becomes an event driven system! Good or Bad?
+        this.eventAggregator.subscribe("get.random.swag", (winner) => this.getRandomSwag(winner));
+        this.eventAggregator.subscribe("put.swag.back", (winner) => this.putSwagBack(winner));
+        this.eventAggregator.subscribe("get.count.unwon.swag", () => this.countUnwonSwag());
     }
 
+    getRandomSwag(winner) {
 
-    randomThing(item) {
-
-        //console.log("swagging...")
-
-        // this.config.current.defaultSwag.forEach(function(element) {
-        //     console.log(element.item, element.won);
-        // }, this);  
-    
         //get swag not won
         var swagList = this.swagList.filter(function (a) {
             return (a.won === false)
         });
 
- 
         //random swag index
         var random = Math.floor(Math.random() * swagList.length);
  
@@ -38,32 +34,28 @@ export class Swag {
         //console.log(swagThing.item);
         swagList[random].won = true;
 
+        winner.swagThing = swagThing;
 
-        item.swagThing = swagThing;
-
-        this.eventAggregator.publish('add.winner', item);
+        this.eventAggregator.publish('add.winner', winner);
 
     }
 
-    putBack(item) {
-
-        console.log(item.swagThing.id);
-
+    putSwagBack(winner) {
+        //TODO want to remove this filter and favour a linq based approach
         var swagItem = this.swagList.filter(function (a) {
-            return (a.id === item.swagThing.id)
+            return (a.id === winner.swagThing.id)
         })[0];
 
         swagItem.won = false;
-    
-        //this.config.current.defaultSwag
+        winner.won = false;
+        winner.swagThing = null;
     }
 
-    countUnwon() {
+    countUnwonSwag() {
         var swagList = this.swagList.filter(function (a) {
             return (a.won === false)
         });
-        //console.log(swagList.length);
-        return swagList.length;
+        this.eventAggregator.publish('count.unwon.swag.is', swagList.length);
     }
 
 }
