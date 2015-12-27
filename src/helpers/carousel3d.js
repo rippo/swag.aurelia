@@ -4,11 +4,16 @@ import Modernizr from './pastry.kit';
 export class Carousel3d {
 
     constructor() {
-        //this.init;
+        this.carousel = null;   
     }
 
-    start() {
-        console.log("start carousel");
+    spin(spincount) {
+                    
+            this.carousel.rotation += this.carousel.theta * spincount * -1;
+            this.carousel.transform();
+    }
+
+    start(count) {
 
         var transformProp = Modernizr.Modernizr.prefixed('transform');
 
@@ -17,6 +22,7 @@ export class Carousel3d {
 
             this.rotation = 0;
             this.panelCount = 0;
+            console.log(this.element.children.length);
             this.totalPanelCount = this.element.children.length;
             this.theta = 0;
 
@@ -68,47 +74,51 @@ export class Carousel3d {
         this.init = function () {
 
 
-            var carousel = new Carousel3D(document.getElementById('carousel')),
-                panelCountInput = document.getElementById('panel-count'),
-                axisButton = document.getElementById('toggle-axis'),
-                navButtons = document.querySelectorAll('#navigation button'),
+            this.carousel = new Carousel3D(document.getElementById('carousel'));
+                //panelCountInput = document.getElementById('panel-count'),
+                //axisButton = document.getElementById('toggle-axis'),
+                //navButtons = document.querySelectorAll('#navigation button'),
 
-                onNavButtonClick = function (event) {
-                    var increment = parseInt(event.target.getAttribute('data-increment'));
-                    carousel.rotation += carousel.theta * increment * -1;
-                    carousel.transform();
-                };
+                //onNavButtonClick = function (event) {
+                 //   var increment = parseInt(event.target.getAttribute('data-increment'));
+                 //   carousel.rotation += carousel.theta * increment * -1;
+                 //   carousel.transform();
+                //};
 
             // populate on startup
-            carousel.panelCount = parseInt(panelCountInput.value, 10);
-            carousel.modify();
+            this.carousel.panelCount = count;
+            this.carousel.modify();
 
 
-            axisButton.addEventListener('click', function () {
-                carousel.isHorizontal = !carousel.isHorizontal;
-                carousel.modify();
-            }, false);
+            //axisButton.addEventListener('click', function () {
+            //    carousel.isHorizontal = !carousel.isHorizontal;
+            //    carousel.modify();
+            //}, false);
 
-            panelCountInput.addEventListener('change', function (event) {
-                carousel.panelCount = event.target.value;
-                carousel.modify();
-            }, false);
+            // panelCountInput.addEventListener('change', function (event) {
+            //     carousel.panelCount = event.target.value;
+            //     carousel.modify();
+            // }, false);
 
-            for (var i = 0; i < 2; i++) {
-                navButtons[i].addEventListener('click', onNavButtonClick, false);
-            }
+            //for (var i = 0; i < 2; i++) {
+            //    navButtons[i].addEventListener('click', onNavButtonClick, false);
+            //}
 
-            document.getElementById('toggle-backface-visibility').addEventListener('click', function () {
-                carousel.element.toggleClassName('panels-backface-invisible');
-            }, false);
+            //document.getElementById('toggle-backface-visibility').addEventListener('click', function () {
+            //    carousel.element.toggleClassName('panels-backface-invisible');
+            //}, false);
 
             setTimeout(function () {
                 document.body.addClassName('ready');
             }, 0);
 
+
+
         };
 
-        this.init(); 
+        this.init(count);
+
+
 
     }
 };

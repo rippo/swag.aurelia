@@ -15,13 +15,13 @@ export class Attendees {
 
         this.clone = clone;
         this.eventAggregator = eventAggregator;
-        this.eventAggregator.subscribe("swag.clicked", () => this.swagclick());
+        //this.eventAggregator.subscribe("swag.clicked", () => this.swagclick());
         this.eventAggregator.subscribe("remove.winner", (user) => this.removeWinner(user));
 
         //this.storage.set("test", "rippo");
 
         this.undoAttendeeEnabled = false;
-        console.log(config.current.tempAttendees);
+        //console.log(config.current.tempAttendees);
         this.attendeeList = config.current.tempAttendees;
         this.undoAttendeeList = [];
 
