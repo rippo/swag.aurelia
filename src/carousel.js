@@ -12,10 +12,12 @@ export class Carousel {
     constructor(config, carousel3d, eventAggregator) {
         this.carousel3d = carousel3d;
 
-        console.log(config.current.tempAttendees);
+        //console.log(config.current.tempAttendees);
         this.attendeeList = config.current.tempAttendees;
+        
+        var rndSpin = Math.floor(Math.random() * this.attendeeList.length * 2) + this.attendeeList.length; 
 
-        eventAggregator.subscribe("swag.clicked", () => this.carousel3d.spin());    
+        eventAggregator.subscribe("swag.clicked", () => this.carousel3d.spin(rndSpin));    
 
     }
 

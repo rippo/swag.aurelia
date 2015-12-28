@@ -180,11 +180,11 @@ div.au-stagger {
 
 /*carousel start*/
         .carouselcontainer {
-            width: 210px;
-            height: 140px;
+            width: 260px;
+            height: 200px;
             position: relative;
             margin: 0 auto 40px;
-            border: 1px solid #CCC;
+            /*border: 1px solid #CCC;*/
             -webkit-perspective: 1100px;
             -moz-perspective: 1100px;
             -o-perspective: 1100px;
@@ -216,18 +216,23 @@ div.au-stagger {
         }
         
         #carousel figure {
+            border-radius: 15px;
             display: block;
             position: absolute;
-            width: 186px;
-            height: 116px;
+            width: 236px;
+            height: 176px;
             left: 10px;
             top: 10px;
-            border: 2px solid black;
-            line-height: 116px;
-            font-size: 18px;
+            border: 1px solid white;
+            /*line-height: 166px;*/
+            font-size: 22px;
             font-weight: bold;
             color: white;
             text-align: center;
+        }
+        
+        #carousel figure img {
+            height: 128px; width:128px; margin-top: 10px;
         }
         
         .ready #carousel figure {

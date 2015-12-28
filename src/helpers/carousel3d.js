@@ -1,3 +1,5 @@
+//See http://desandro.github.io/3dtransforms/examples/carousel-02-dynamic.html
+
 import Modernizr from './pastry.kit';
 
 
@@ -32,7 +34,7 @@ export class Carousel3d {
 
         Carousel3D.prototype.modify = function () {
 
-            var panel, angle, i;
+            var panel, angle, i, colour;
 
             this.panelSize = this.element[this.isHorizontal ? 'offsetWidth' : 'offsetHeight'];
             this.rotateFn = this.isHorizontal ? 'rotateY' : 'rotateX';
@@ -46,7 +48,9 @@ export class Carousel3d {
                 panel = this.element.children[i];
                 angle = this.theta * i;
                 panel.style.opacity = 1;
-                panel.style.backgroundColor = 'hsla(' + angle + ', 100%, 50%, 0.8)';
+                colour = (angle / 360 * 1.8) + 200 ;
+                //panel.style.backgroundColor = 'hsla(' + angle + ', 100%, 50%, 0.7)';
+                panel.style.backgroundColor = 'hsla(' + colour + ', 100%, 50%, 0.7)';
                 // rotate panel, then push it out in 3D space
                 panel.style[transformProp] = this.rotateFn + '(' + angle + 'deg) translateZ(' + this.radius + 'px)';
             }
@@ -75,50 +79,18 @@ export class Carousel3d {
 
 
             this.carousel = new Carousel3D(document.getElementById('carousel'));
-                //panelCountInput = document.getElementById('panel-count'),
-                //axisButton = document.getElementById('toggle-axis'),
-                //navButtons = document.querySelectorAll('#navigation button'),
-
-                //onNavButtonClick = function (event) {
-                 //   var increment = parseInt(event.target.getAttribute('data-increment'));
-                 //   carousel.rotation += carousel.theta * increment * -1;
-                 //   carousel.transform();
-                //};
 
             // populate on startup
             this.carousel.panelCount = count;
             this.carousel.modify();
 
-
-            //axisButton.addEventListener('click', function () {
-            //    carousel.isHorizontal = !carousel.isHorizontal;
-            //    carousel.modify();
-            //}, false);
-
-            // panelCountInput.addEventListener('change', function (event) {
-            //     carousel.panelCount = event.target.value;
-            //     carousel.modify();
-            // }, false);
-
-            //for (var i = 0; i < 2; i++) {
-            //    navButtons[i].addEventListener('click', onNavButtonClick, false);
-            //}
-
-            //document.getElementById('toggle-backface-visibility').addEventListener('click', function () {
-            //    carousel.element.toggleClassName('panels-backface-invisible');
-            //}, false);
-
             setTimeout(function () {
                 document.body.addClassName('ready');
             }, 0);
 
-
-
         };
 
         this.init(count);
-
-
 
     }
 };
