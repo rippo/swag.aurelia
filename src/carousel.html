@@ -1,15 +1,10 @@
 <template>
-    
-     <h2>Attendees</h1>
-
-  <section class="carouselcontainer">
-    <div class="carousel" id="attendeeCarousel">
-      <figure repeat.for="attendee of attendeeList">
-                              <img class="img-circle" src.bind="attendee.image" />
-                              <br/>
-
-          ${attendee.name}</figure>
-    </div>
-  </section>
-   
+    <section class="carouselcontainer">
+        <div class="carousel" id="attendeeCarousel">
+            <figure data-position="${attendee.position}" repeat.for="attendee of attendeeList">
+                <img class="img-circle" src.bind="attendee.image" />
+                <br/> ${attendee.name} ${attendee.position}
+            </figure>
+        </div>
+    </section>
 </template>

@@ -16,8 +16,8 @@ export class Carousel3d {
             this.carousel.transform();
     }
     
-    won(id) {
-        var panel = $('#' + this.carouselContainer + " figure[data-id='" + id +"']");
+    won(position) {
+        var panel = $('#' + this.carouselContainer + " figure[data-position='" + position +"']");
         panel.css("background-color", "hsla(5, 100%, 50%, 0.7)");
 
     }
