@@ -4,7 +4,7 @@ export class filterWinnersValueConverter {
     //console.log("filter winners called");
  
     return array.filter(function(val, index, a) {
-      return (val.WonSwag === false);
+      return (val.swagThing !== null);
     });   
     
   }

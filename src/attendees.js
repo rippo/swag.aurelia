@@ -1,76 +1,98 @@
 import {inject} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
-//import {HttpClient} from 'aurelia-fetch-client';
-//import 'fetch';
+import {Carousel3d} from './helpers/carousel3d';
 import {BaseConfig} from './helpers/baseconfig';
-import {Clone} from './helpers/clone';
-import $ from 'jquery';
 
+@inject(BaseConfig, EventAggregator)
 
-@inject(BaseConfig, Clone, EventAggregator)
 
 export class Attendees {
 
-    constructor(config, clone, eventAggregator) {
-
-        this.clone = clone;
+    constructor(config, eventAggregator) {
+        this.carousel3d = new Carousel3d();
+        this.lastWinPosition = 0;
         this.eventAggregator = eventAggregator;
-        //this.eventAggregator.subscribe("swag.clicked", () => this.swagclick());
-        this.eventAggregator.subscribe("remove.winner", (user) => this.removeWinner(user));
 
-        //this.storage.set("test", "rippo");
-
-        this.undoAttendeeEnabled = false;
         //console.log(config.current.tempAttendees);
         this.attendeeList = config.current.tempAttendees;
-        this.undoAttendeeList = [];
-
-        // http.configure(config => {
-        //   config
-        //     .useStandardConfiguration()
-        //     .withBaseUrl('http://localhost:6648/');
-        // });
-    }
-
-    swagclick() {
-        console.log($('#attendeeList .card').length);
-        //get random card from attendee list    
-        var random = Math.floor(Math.random() * $('#attendeeList .card').length);
         
-        var attendee = this.attendeeList.splice(random, 1)[0];
-        var clone = this.clone.copy(attendee);
-        this.eventAggregator.publish("get.random.swag", clone);
-        this.eventAggregator.publish("get.count.unwon.swag");
+        //Auto position, saves us looping later on....
+        for (var i = 0; i < this.attendeeList.length; i++)
+            this.attendeeList[i].position = i;
+
+
+        eventAggregator.subscribe("swag.clicked", () => {
+            var nextAttendeeWon = this.getRandomWinner();
+
+            if (nextAttendeeWon !== null) {
+                
+                this.eventAggregator.publish('add.winner', nextAttendeeWon);    
+                
+                var spin = 0, extraSpins = this.attendeeList.length * 3;
+
+                spin = this.lastWinPosition - nextAttendeeWon.position; 
+             
+                //we are on the win already so just spin it a few times
+                if (spin !== 0) {
+                    spin = Math.abs(spin); //make it postive 
+                    spin = nextAttendeeWon.position - this.lastWinPosition + extraSpins;
+                } else {
+                    spin = extraSpins;
+                }
+
+
+                this.lastWinPosition = nextAttendeeWon.position;
+                console.log(spin, this.lastWinPosition, nextAttendeeWon.name, nextAttendeeWon.position);
+                this.carousel3d.spin(spin);
+
+            }
+        });
+
     }
 
-    removeAttendee(attendee) {
-        //shouls we enable the undo button
-        if (this.undoAttendeeList.length === 0)
-            this.undoAttendeeEnabled = true;
-
-        //push to undo stack
-        this.undoAttendeeList.push(attendee);
-
-        //remove attendee from list
-        this.attendeeList.splice(this.attendeeList.indexOf(attendee), 1);
-
-    }
-
-    removeWinner(attendee) {
-        //console.log("remove winner");
-        this.attendeeList.push(attendee);
-        this.eventAggregator.publish("put.swag.back", attendee);
-    }
-
-    undohandler() {
-        //pop back into attendee list
-        var attendee = this.undoAttendeeList.pop();
+    attached() {
+        this.carousel3d.start(this.attendeeList.length, "attendeeCarousel");
         
-        this.attendeeList.push(attendee);
-        
-        //disable undo button if no more undos left on stack
-        if (this.undoAttendeeList.length === 0)
-            this.undoAttendeeEnabled = false;
+        //trigger when transition ended
+        var transEndEventName = ('WebkitTransition' in document.documentElement.style) ? 'webkitTransitionEnd' : 'transitionend';
+
+        document.getElementById("attendeeCarousel").addEventListener(transEndEventName, (event) => {
+            console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
+            this.carousel3d.won(this.lastWinPosition);
+        });
+
     }
+
+
+    getRandomWinner() {
         
+        //console.log("get random swag");
+
+        //get swag not won
+        var attendeeList = this.attendeeList.filter(function (a) {
+            return (a.won === false)
+        });
+
+        if (attendeeList.length === 0)
+            return null;
+
+        //random swag index
+        var randomIndex = Math.floor(Math.random() * attendeeList.length);
+
+        //randomIndex = 0;
+ 
+        //get swag thing and set it as won
+        var winner = attendeeList[randomIndex];
+        attendeeList[randomIndex].won = true;
+
+        //winner.swagThing = swagThing;
+
+        //this.eventAggregator.publish('add.winner', winner);
+
+        //console.log(swagList.length, randomIndex);
+
+        return winner;
+
+    }
+
 };

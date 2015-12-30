@@ -1,10 +1,16 @@
 <template>
-    <h1>Swag</h1>
 
-    <div class="col-sm-4 col-md-3 card-container" repeat.for="swag of swagList">
+    <section class="carouselcontainer">
+        <div class="carousel" id="swagCarousel">
+            <figure data-position="${swag.position}" repeat.for="swag of swagList">
+                ${swag.item} ${swag.won} ${swag.position}
+            </figure>
+        </div>
+    </section>
 
-        ${swag.item} ${swag.won} ${swag.id}
 
-    </div>
+    <!--<div repeat.for="swag of swagList">
+        ${swag.item} ${swag.won} ${swag.position}
+    </div>-->
 
 </template>

@@ -1,30 +1,21 @@
 <template>
-  <require from="./swag"></require> 
-  <require from="./swag1"></require> 
-  <require from="./winner"></require> 
   <require from="./attendees"></require> 
-  <require from="./carousel"></require> 
+  <require from="./swag"></require> 
+  <require from="./winner"></require> 
 
   <section>
 
     <div class="row">
       <div class="div-md-12 text-center">
-        <h2>${heading}</h2>
-        <!--<select ref="direction">
-          <option value="ascending">Ascending</option>
-          <option value="descending">Descending</option>
-        </select>-->
         <button class="btn btn-lg btn-primary" disabled.bind="!swagEnabled"  
           click.delegate="random()">Swag</button>
       </div> 
     </div> 
 
 
-    <carousel></carousel>    
-    <swag1></swag1>
-    <!--<swag></swag>
+    <attendees></attendees>
+    <swag></swag>
     <winner></winner>
-    <attendees></attendees>-->
 
 
   </section>

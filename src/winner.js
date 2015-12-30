@@ -10,9 +10,15 @@ export class Winner {
         this.winnerList = [];
         
         this.eventAggregator.subscribe('add.winner', (attendee) => {
-            //console.log(item);
-            this.winnerList.push(attendee);
+            // console.log(attendee);
+            this.currentWinner = attendee;
+        });
+        
+        this.eventAggregator.subscribe('add.prize', (swag) => {
+            this.currentWinner.swagThing = swag;
+            this.winnerList.push(this.currentWinner);
         }); 
+         
     }
     
     
