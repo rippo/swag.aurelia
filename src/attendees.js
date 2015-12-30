@@ -14,7 +14,7 @@ export class Attendees {
         this.eventAggregator = eventAggregator;
 
         //console.log(config.current.tempAttendees);
-        this.attendeeList = config.current.tempAttendees;
+        this.attendeeList = this.shuffle(config.current.tempAttendees);
         
         //Auto position, saves us looping later on....
         for (var i = 0; i < this.attendeeList.length; i++)
@@ -25,9 +25,9 @@ export class Attendees {
             var nextAttendeeWon = this.getRandomWinner();
 
             if (nextAttendeeWon !== null) {
-                
-                this.eventAggregator.publish('add.winner', nextAttendeeWon);    
-                
+
+                this.eventAggregator.publish('add.winner', nextAttendeeWon);
+
                 var spin = 0, extraSpins = this.attendeeList.length * 3;
 
                 spin = this.lastWinPosition - nextAttendeeWon.position; 
@@ -93,6 +93,26 @@ export class Attendees {
 
         return winner;
 
+    }
+
+    shuffle(array) {
+        var counter = array.length, temp, index;
+
+        // While there are elements in the array
+        while (counter > 0) {
+            // Pick a random index
+            index = Math.floor(Math.random() * counter);
+
+            // Decrease counter by 1
+            counter--;
+
+            // And swap the last element with it
+            temp = array[counter];
+            array[counter] = array[index];
+            array[index] = temp;
+        }
+
+        return array;
     }
 
 };
