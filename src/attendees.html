@@ -4,7 +4,7 @@
     <div class="row au-stagger" id="attendeeList">
         <h2>Attendees</h2>
         <div class="col-sm-4 col-md-3 card-container" repeat.for="attendee of attendeeList | sort: { propertyName: 'name', direction: direction.value }">
-            <div class="card" data-id="${attendee.memberId}">
+            <div class="card" data-id="${attendee.id}">
                 <canvas class="header-bg" width="250" height="70"></canvas>
                 <div class="close" click.trigger="removeAttendee(attendee)">X</div>
                 <div class="avatar">

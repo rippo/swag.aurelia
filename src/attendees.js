@@ -34,7 +34,7 @@ export class Attendees {
 
     swagclick() {
         console.log($('#attendeeList .card').length);
-        //get random memberId from attendee list    
+        //get random card from attendee list    
         var random = Math.floor(Math.random() * $('#attendeeList .card').length);
         
         var attendee = this.attendeeList.splice(random, 1)[0];

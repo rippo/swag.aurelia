@@ -1,21 +1,28 @@
 //See http://desandro.github.io/3dtransforms/examples/carousel-02-dynamic.html
 
 import Modernizr from './pastry.kit';
+import $ from 'jquery';
 
 
 export class Carousel3d {
 
     constructor() {
         this.carousel = null;   
+        this.carouselContainer = null;
     }
 
     spin(spincount) {
-                    
             this.carousel.rotation += this.carousel.theta * spincount * -1;
             this.carousel.transform();
     }
+    
+    won(id) {
+        var panel = $('#' + this.carouselContainer + " figure[data-id='" + id +"']");
+        panel.css("background-color", "hsla(5, 100%, 50%, 0.7)");
 
-    start(count) {
+    }
+
+    start(count, carouselContainer) {
 
         var transformProp = Modernizr.Modernizr.prefixed('transform');
 
@@ -24,12 +31,17 @@ export class Carousel3d {
 
             this.rotation = 0;
             this.panelCount = 0;
-            console.log(this.element.children.length);
+            //console.log(this.element.children.length);
             this.totalPanelCount = this.element.children.length;
             this.theta = 0;
 
             this.isHorizontal = true;
 
+        }
+        
+        Carousel3D.prototype.won = function(id) {
+            var obj = this.carousel;
+            console.log(obj);
         }
 
         Carousel3D.prototype.modify = function () {
@@ -77,8 +89,8 @@ export class Carousel3d {
 
         this.init = function () {
 
-
-            this.carousel = new Carousel3D(document.getElementById('carousel'));
+            this.carouselContainer = carouselContainer;
+            this.carousel = new Carousel3D(document.getElementById(carouselContainer));
 
             // populate on startup
             this.carousel.panelCount = count;
@@ -91,6 +103,7 @@ export class Carousel3d {
         };
 
         this.init(count);
+
 
     }
 };

@@ -1,0 +1,18 @@
+<template>
+
+    <h2>Swag</h1>
+
+  <section class="carouselcontainer">
+    <div class="carousel" id="swagCarousel">
+        <figure data-id="${swag.id}" repeat.for="swag of swagList">
+            ${swag.item} ${swag.won} ${swag.id}
+        </figure> 
+   </div>
+  </section>
+
+
+        <div repeat.for="swag of swagList">
+            ${swag.item} ${swag.won} ${swag.id}
+        </figure> 
+   
+</template>
