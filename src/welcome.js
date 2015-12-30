@@ -25,9 +25,10 @@ export class Welcome {
 
         this.swagEnabled = true;
 
-
         this.eventAggregator.subscribe('change.swag.button.state', (state) => this.swagEnabled = state);
+        //this.eventAggregator.subscribe('change.put.back.button.state', (state) => this.putBackEnabled = state);
         this.eventAggregator.subscribe('count.unwon.swag.is', (count) => this.swagEnabled = (count > 0));
+
         // http.configure(config => {
         //   config
         //     .useStandardConfiguration()
@@ -48,5 +49,6 @@ export class Welcome {
     random() {
         this.eventAggregator.publish("swag.clicked");    
     }
+
     
 };

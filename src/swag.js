@@ -19,48 +19,48 @@ export class Swag {
         for(var i=0; i <this.swagList.length; i++)
             this.swagList[i].position = i;
         
-        
 
         //TODO is pub/sub correct way to call into these functions?
         //  Suppose if I inect Swag on attendees then I am tight coupling
         //  This does loosly couple but becomes an event driven system! Good or Bad?
-        //this.eventAggregator.subscribe("get.random.swag", (winner) => this.getRandomSwag(winner));
-        //this.eventAggregator.subscribe("put.swag.back", (winner) => this.putSwagBack(winner));
-        //this.eventAggregator.subscribe("get.count.unwon.swag", () => this.countUnwonSwag());
-        
-        //TODO move to function
-        eventAggregator.subscribe("swag.clicked", () => {
-           var nextSwagWon = this.getRandomSwag();
-           
-           if (nextSwagWon !== null) {
-               var spin = 0, extraSpins = this.swagList.length * 3;
-               
-               this.lastPrize = nextSwagWon;
-
-               spin = this.lastWinPosition - nextSwagWon.position; 
-             
-               //we are on the win already so just spin it a few times
-               if (spin !== 0) {
-                   spin = Math.abs(spin); //make it postive 
-                   spin = nextSwagWon.position - this.lastWinPosition + extraSpins;
-               } else {
-                   spin = extraSpins;
-               }
-              
-             
-             this.lastWinPosition = nextSwagWon.position;
-             console.log(spin, this.lastWinPosition, nextSwagWon.item, nextSwagWon.position);
-             this.carousel3d.spin(spin);   
-                
-           }
-           
-            
-           //this.lastWin = this.swagList[index];
-           //this.carousel3d.spin(this.swagList.length);
-           //this.spinCount--;
-        });
-    
+        eventAggregator.subscribe("swag.clicked", () => { this.swagClicked()});
+        eventAggregator.subscribe("remove.winner", (winner) => { this.removeSwag(winner);});
+        eventAggregator.subscribe("remove.swag", (winner) => { this.removeSwag(winner);});
+ 
     }
+    
+    swagClicked() {
+        var nextSwagWon = this.getRandomSwag();
+        
+        if (nextSwagWon !== null) {
+            var spin = 0, extraSpins = this.swagList.length * 3;
+            
+            this.lastPrize = nextSwagWon;
+
+            spin = this.lastWinPosition - nextSwagWon.position; 
+            
+            //we are on the win already so just spin it a few times
+            if (spin !== 0) {
+                spin = Math.abs(spin); //make it postive 
+                spin = nextSwagWon.position - this.lastWinPosition + extraSpins;
+            } else {
+                spin = extraSpins;
+            }
+            
+            
+            this.lastWinPosition = nextSwagWon.position;
+            console.log(spin, this.lastWinPosition, nextSwagWon.item, nextSwagWon.position);
+            this.carousel3d.spin(spin);   
+            
+        }
+    }
+
+    removeSwag(winner) {
+        this.carousel3d.putback(winner.swagThing.position);
+        //console.log(winner.swagThing.position);
+        this.swagList[winner.swagThing.position].won = false;
+    }
+    
 
     attached() {
         this.carousel3d.start(this.swagList.length, "swagCarousel");

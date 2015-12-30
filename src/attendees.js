@@ -48,6 +48,12 @@ export class Attendees {
             }
         });
 
+        eventAggregator.subscribe("remove.winner", (winner) => {
+            this.carousel3d.putback(winner.position);
+            this.attendeeList[winner.position].won = false;
+            this.attendeeList[winner.position].swagThing = null;
+        });
+
     }
 
     attached() {
@@ -57,7 +63,7 @@ export class Attendees {
         var transEndEventName = ('WebkitTransition' in document.documentElement.style) ? 'webkitTransitionEnd' : 'transitionend';
 
         document.getElementById("attendeeCarousel").addEventListener(transEndEventName, (event) => {
-            console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
+            //console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
             this.carousel3d.won(this.lastWinPosition);
         });
 

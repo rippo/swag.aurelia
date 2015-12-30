@@ -19,7 +19,11 @@ export class Carousel3d {
     won(position) {
         var panel = $('#' + this.carouselContainer + " figure[data-position='" + position +"']");
         panel.css("background-color", "hsla(5, 100%, 50%, 0.7)");
+    }
 
+    putback(position) {
+        var panel = $('#' + this.carouselContainer + " figure[data-position='" + position +"']");
+        panel.css("background-color", "hsla(134, 100%, 50%, 0.7)");
     }
 
     start(count, carouselContainer) {
