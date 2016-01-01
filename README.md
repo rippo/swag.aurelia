@@ -4,7 +4,7 @@ Swagolicious done the Aurelia way!
 To get up and running, first clone my repo
 
 ```shell
-https://github.com/rippo/swag.aurelia.git
+git clone https://github.com/rippo/swag.aurelia.git
 ```
  
 Then install jspm
@@ -22,6 +22,7 @@ npm install -g http-server
 Then use jspm to pull down the aurelia framework and dependencies
 
 ```shell
+cd swag.aurelia
 jspm install
 ```
 
