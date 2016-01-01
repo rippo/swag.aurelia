@@ -176,6 +176,9 @@ div.au-stagger {
   }
 }
 
+.content span:hover {
+    color: #fff; cursor: pointer;
+}
 
 
 /*carousel start*/

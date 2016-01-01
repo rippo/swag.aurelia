@@ -1,6 +1,8 @@
 
 import {BindingEngine, inject} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
+import {DialogService} from 'aurelia-dialog';
+import {Confirm} from './confirm';
 //import {HttpClient} from 'aurelia-fetch-client';
 //import 'fetch';
 import {Storage} from './helpers/storage';
@@ -10,16 +12,17 @@ import $ from 'jquery';
 
 
 //@inject(HttpClient, Storage, Swag, ObserverLocator, BaseConfig)
-@inject(BindingEngine, BaseConfig, Clone, EventAggregator)
+@inject(BindingEngine, BaseConfig, Clone, EventAggregator, DialogService)
 
 export class Welcome {
 
     //constructor(http, storage) {
-    constructor(bindingEngine, config, clone, eventAggregator) {
+    constructor(bindingEngine, config, clone, eventAggregator, dialogService) {
 
         //this.swag = swag;
         this.clone = clone;
         this.eventAggregator = eventAggregator;
+        this.dialogService = dialogService;
 
         //this.storage.set("test", "rippo");
 
@@ -34,8 +37,9 @@ export class Welcome {
         //     .useStandardConfiguration()
         //     .withBaseUrl('http://localhost:6648/');
         // });
+        
     }
-    
+
 
 
     activate() {
@@ -44,11 +48,22 @@ export class Welcome {
         //   .then(users => this.attendeeList = users);
     }
 
+    reset() {
+        this.dialogService.open({viewModel: Confirm, model: 'Are you sure you want to reset?' }).then(response => {
+            //console.log(response);
+            if (!response.wasCancelled) {
+                console.log('OK');
+            } else {
+                console.log('cancelled');
+            }
+            //console.log(response.output);
+        });
+    }
     
     //Selects random winner
     random() {
-        this.eventAggregator.publish("swag.clicked");    
+        this.eventAggregator.publish("swag.clicked");
     }
 
-    
+
 };

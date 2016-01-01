@@ -1,21 +1,20 @@
 <template>
-      <div class="row au-stagger" id="winnerList" show.bind="winnerList.length > 0">
-      <h2>Winners</h2>
-      <div class="col-sm-4 col-md-3 card-container" 
-         repeat.for="winner of winnerList">
-        <div class="card">
-          <canvas class="header-bg" width="250" height="70"></canvas>
-          <div class="avatar">
-            <img src.bind="winner.image" />
-          </div>
-          <div class="content">
-            <p class="name">${winner.name} - ${winner.swagThing.item}
-          <span click.trigger="removeWinnerAndSwag(winner)"><i class="glyphicon glyphicon-hand-left"></i></span>
-          <span click.trigger="removeSwag(winner)"><i class="glyphicon glyphicon-thumbs-down"></i></span>
-            </p>
-          </div>
+    <div class="row au-stagger" id="winnerList" show.bind="winnerList.length > 0">
+        <h2>Winners</h2>
+        <div class="col-md-4 col-sm-6 card-container" repeat.for="winner of winnerList">
+            <div class="card">
+                <canvas class="header-bg" width="250" height="70"></canvas>
+                <div class="avatar">
+                    <img src.bind="winner.image" />
+                </div>
+                <div class="content">
+                    <p class="name">${winner.name}<br/>${winner.swagThing.item}</p>
+                    <span title="Remove winner and swag" click.trigger="removeWinnerAndSwag(winner)"><i class="glyphicon glyphicon-hand-left"></i></span>
+                    <span title="Just remove swag, winner will not get another prize" click.trigger="removeSwag(winner)"><i class="glyphicon glyphicon-thumbs-down"></i></span>
+
+                </div>
+            </div>
         </div>
-      </div>
     </div>
- 
-</template>    
+
+</template>

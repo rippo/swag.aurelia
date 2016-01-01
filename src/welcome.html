@@ -1,24 +1,28 @@
 <template>
-  <require from="./attendees"></require> 
-  <require from="./swag"></require> 
-  <require from="./winner"></require> 
+    <require from="./attendees"></require>
+    <require from="./swag"></require>
+    <require from="./winner"></require>
 
-  <section>
+    <section>
 
-    <div class="row">
-      <div class="div-md-12 text-center">
-        <button class="btn btn-lg btn-primary" disabled.bind="!swagEnabled"  
-          click.delegate="random()">
-          <i class="glyphicon glyphicon-repeat"></i>
-          Swag</button>
-      </div> 
-    </div> 
+        <div class="row">
+            <div class="col-md-6 text-center">
 
+                <button class="btn btn-lg btn-primary" disabled.bind="!swagEnabled" click.delegate="random()">
+                    <i class="glyphicon glyphicon-repeat"></i> Swag
+                </button>
 
-    <attendees></attendees>
-    <swag></swag>
-    <winner></winner>
-
-
-  </section>
+                <button class="btn btn-lg btn-primary" click.delegate="reset()">
+                    <i class="glyphicon glyphicon-refresh"></i> Reset
+                </button>
+                
+                
+                <attendees></attendees>
+                <swag></swag>
+            </div>
+            <div class="col-md-6">
+                <winner></winner>
+            </div>
+        </div>
+    </section>
 </template>
