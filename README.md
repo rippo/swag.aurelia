@@ -13,15 +13,9 @@ Might as well get a http server
 
 > $ npm install http-server -g
 
-Download the ES 2016 kit from 
+Then use jspm to pull down the aurelia framework and dependencies
 
-http://aurelia.io/downloads/kit-es2016.zip
-
-Copy whole jspm_folder in zip you have downloaded into your www root folder where you have cloned my repo
-
-Then install jquery via jspm
-
-> $ jspm install jquery
+> $ jspm install
 
 Note: To run http server without any kind of caching
 
