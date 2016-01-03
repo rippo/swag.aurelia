@@ -30,6 +30,8 @@ export class Swag {
     }
     
     swagClicked() {
+        this.eventAggregator.publish('change.swag.button.state', false);
+        
         var nextSwagWon = this.getRandomSwag();
         
         if (nextSwagWon !== null) {
@@ -49,7 +51,7 @@ export class Swag {
             
             
             this.lastWinPosition = nextSwagWon.position;
-            console.log(spin, this.lastWinPosition, nextSwagWon.item, nextSwagWon.position);
+            //console.log(spin, this.lastWinPosition, nextSwagWon.item, nextSwagWon.position);
             this.carousel3d.spin(spin);   
             
         }
@@ -72,7 +74,7 @@ export class Swag {
                 //console.log("Swag carousel ended, last win is " + this.lastWin.item, this.lastWin.id );
                 this.carousel3d.won(this.lastWinPosition);
                 this.eventAggregator.publish('add.prize', this.lastPrize);    
-                    
+                this.countUnwonSwag();    
         });                
     }
 
@@ -85,7 +87,7 @@ export class Swag {
             return (a.won === false)
         });
 
-        if (swagList.length === 0)
+        if (swagList.length === 0) 
             return null;
 
         //random swag index
@@ -118,11 +120,15 @@ export class Swag {
     //     winner.swagThing = null;
     // }
 
-    // countUnwonSwag() {
-    //     var swagList = this.swagList.filter(function (a) {
-    //         return (a.won === false)
-    //     });
-    //     this.eventAggregator.publish('count.unwon.swag.is', swagList.length);
-    // }
+    countUnwonSwag() {
+        var swagList = this.swagList.filter(function (a) {
+            return (a.won === false)
+        });
+
+        if (swagList.length === 0) 
+            this.eventAggregator.publish('no.winners.or.swag.left', true);
+        else
+            this.eventAggregator.publish('change.swag.button.state', true);
+    }
 
 }

@@ -42,7 +42,7 @@ export class Attendees {
 
 
                 this.lastWinPosition = nextAttendeeWon.position;
-                console.log(spin, this.lastWinPosition, nextAttendeeWon.name, nextAttendeeWon.position);
+                //console.log(spin, this.lastWinPosition, nextAttendeeWon.name, nextAttendeeWon.position);
                 this.carousel3d.spin(spin);
 
             }
@@ -65,6 +65,7 @@ export class Attendees {
         document.getElementById("attendeeCarousel").addEventListener(transEndEventName, (event) => {
             //console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
             this.carousel3d.won(this.lastWinPosition);
+            this.countUnwonAttendees();    
         });
 
     }
@@ -119,6 +120,19 @@ export class Attendees {
         }
 
         return array;
+    }
+
+    countUnwonAttendees() {
+        var list = this.attendeeList.filter(function (a) {
+            return (a.won === false)
+        });
+        
+        console.log(list.length);
+        
+        if (list.length === 0)
+            this.eventAggregator.publish('no.winners.or.swag.left', true);
+        else
+            this.eventAggregator.publish('change.swag.button.state', true);
     }
 
 };

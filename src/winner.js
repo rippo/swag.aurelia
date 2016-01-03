@@ -29,6 +29,7 @@ export class Winner {
 
         this.eventAggregator.publish("remove.winner", winner);
         this.eventAggregator.publish('change.swag.button.state', true);
+        this.eventAggregator.publish("no.winners.or.swag.left", false);
     }
 
     removeSwag(winner) {
@@ -37,6 +38,7 @@ export class Winner {
 
         this.eventAggregator.publish("remove.swag", winner);
         this.eventAggregator.publish('change.swag.button.state', true);
+        this.eventAggregator.publish("no.winners.or.swag.left", false);
     }
 
 };

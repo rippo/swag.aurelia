@@ -27,10 +27,20 @@ export class Welcome {
         //this.storage.set("test", "rippo");
 
         this.swagEnabled = true;
+        this.noSwagOrAttendeesLeft = false;
 
-        this.eventAggregator.subscribe('change.swag.button.state', (state) => this.swagEnabled = state);
+        this.eventAggregator.subscribe('change.swag.button.state', (state) => {
+            if (!this.noSwagOrAttendeesLeft)
+                this.swagEnabled = state
+        });
         //this.eventAggregator.subscribe('change.put.back.button.state', (state) => this.putBackEnabled = state);
-        this.eventAggregator.subscribe('count.unwon.swag.is', (count) => this.swagEnabled = (count > 0));
+        //this.eventAggregator.subscribe('count.unwon.swag.is', (count) => this.swagEnabled = (count > 0));
+        
+        this.eventAggregator.subscribe('no.winners.or.swag.left', (state) => {
+            this.noSwagOrAttendeesLeft = state;
+            this.swagEnabled = !state;
+        });
+        
 
         // http.configure(config => {
         //   config
@@ -49,14 +59,10 @@ export class Welcome {
     }
 
     reset() {
-        this.dialogService.open({viewModel: Confirm, model: 'Are you sure you want to reset?' }).then(response => {
-            //console.log(response);
+        this.dialogService.open({ viewModel: Confirm, model: 'Are you sure you want to reset?' }).then(response => {
             if (!response.wasCancelled) {
-                console.log('OK');
-            } else {
-                console.log('cancelled');
+                self.location.href = "/";
             }
-            //console.log(response.output);
         });
     }
     
