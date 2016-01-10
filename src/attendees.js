@@ -1,25 +1,33 @@
 import {inject} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {Carousel3d} from './helpers/carousel3d';
+import {MapAttendee} from './helpers/mapattendee';
 import {BaseConfig} from './helpers/baseconfig';
+import {HttpClient} from 'aurelia-fetch-client';
 
-@inject(BaseConfig, EventAggregator)
+@inject(BaseConfig, HttpClient, EventAggregator, MapAttendee)
 
 
 export class Attendees {
 
-    constructor(config, eventAggregator) {
+    constructor(config, http, eventAggregator, mapAttendee) {
+
+        this.eventAggregator = eventAggregator;
+        this.config = config;
+        this.mapAttendee = mapAttendee;
+
+        http.configure(config => {
+            config
+                .useStandardConfiguration()
+                .withBaseUrl('http://meetup.wildesoft.net/')
+        });
+        this.http = http;
+
         this.carousel3d = new Carousel3d();
         this.lastWinPosition = 0;
-        this.eventAggregator = eventAggregator;
-
-        //console.log(config.current.tempAttendees);
-        this.attendeeList = this.shuffle(config.current.tempAttendees);
+        //this.mapAttendee = mapAttendee;
         
-        //Auto position, saves us looping later on....
-        for (var i = 0; i < this.attendeeList.length; i++)
-            this.attendeeList[i].position = i;
-
+        this.attendeeList = [];
 
         eventAggregator.subscribe("swag.clicked", () => {
             var nextAttendeeWon = this.getRandomWinner();
@@ -57,16 +65,39 @@ export class Attendees {
     }
 
     attached() {
-        this.carousel3d.start(this.attendeeList.length, "attendeeCarousel");
-        
-        //trigger when transition ended
-        var transEndEventName = ('WebkitTransition' in document.documentElement.style) ? 'webkitTransitionEnd' : 'transitionend';
 
-        document.getElementById("attendeeCarousel").addEventListener(transEndEventName, (event) => {
-            //console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
-            this.carousel3d.won(this.lastWinPosition);
-            this.countUnwonAttendees();    
-        });
+        if (this.config.current.attendees.length == 0) {
+
+            return this.http.fetch('api/attendees')
+                .then(response => response.json())
+                .then(users => {
+                     this.mapAttendee.fill(users);
+
+                    this.attendeeList = this.config.current.attendees;
+                    setTimeout(() => {
+                        this.carousel3d.start(this.attendeeList.length, "attendeeCarousel");
+                        
+                        //trigger when transition ended
+                        var transEndEventName = ('WebkitTransition' in document.documentElement.style) ? 'webkitTransitionEnd' : 'transitionend';
+
+                        document.getElementById("attendeeCarousel").addEventListener(transEndEventName, (event) => {
+                            //console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
+                            this.carousel3d.won(this.lastWinPosition);
+                            this.countUnwonAttendees();    
+                        });
+                        
+                        
+                    }, 5);
+
+                    // this.taskQueue.queueMicroTask(() => {
+                    //     console.log(this.attendeeList.length);
+                    // });
+
+                    //console.log("fi");
+                    
+                });
+        }
+
 
     }
 
@@ -102,33 +133,13 @@ export class Attendees {
 
     }
 
-    shuffle(array) {
-        var counter = array.length, temp, index;
-
-        // While there are elements in the array
-        while (counter > 0) {
-            // Pick a random index
-            index = Math.floor(Math.random() * counter);
-
-            // Decrease counter by 1
-            counter--;
-
-            // And swap the last element with it
-            temp = array[counter];
-            array[counter] = array[index];
-            array[index] = temp;
-        }
-
-        return array;
-    }
-
     countUnwonAttendees() {
         var list = this.attendeeList.filter(function (a) {
             return (a.won === false)
         });
-        
+
         console.log(list.length);
-        
+
         if (list.length === 0)
             this.eventAggregator.publish('no.winners.or.swag.left', true);
         else

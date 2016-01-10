@@ -2,18 +2,17 @@ import {BindingEngine, inject} from 'aurelia-framework';
 import {EventAggregator} from 'aurelia-event-aggregator';
 import {DialogService} from 'aurelia-dialog';
 import {Confirm} from './confirm';
-import {HttpClient} from 'aurelia-fetch-client';
 import {Storage} from './helpers/storage';
 import {BaseConfig} from './helpers/baseconfig';
 import {Clone} from './helpers/clone';
 import $ from 'jquery';
 
 
-@inject(HttpClient, BindingEngine, BaseConfig, Clone, EventAggregator, DialogService)
+@inject(BindingEngine, BaseConfig, Clone, EventAggregator, DialogService)
 
 export class Welcome {
 
-    constructor(http, bindingEngine, config, clone, eventAggregator, dialogService) {
+    constructor(bindingEngine, config, clone, eventAggregator, dialogService) {
 
         //this.swag = swag;
         this.clone = clone;
@@ -35,21 +34,6 @@ export class Welcome {
             this.swagEnabled = !state;
         });
 
-
-        http.configure(config => {
-            config
-                .useStandardConfiguration()
-                .withBaseUrl('http://meetup.wildesoft.net/')
-        });
-
-        this.http = http;
-    }
-
-    activate() {
-
-        return this.http.fetch('api/attendees')
-            .then(response => response.json())
-            .then(users => console.log(users));
     }
 
     reset() {
@@ -64,6 +48,5 @@ export class Welcome {
     random() {
         this.eventAggregator.publish("swag.clicked");
     }
-
 
 };
