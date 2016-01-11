@@ -1,30 +1,21 @@
 import {inject} from 'aurelia-framework';
 import {BaseConfig} from './baseconfig';
-import {HttpClient} from 'aurelia-fetch-client';
 
 
-@inject(BaseConfig, HttpClient)
+@inject(BaseConfig)
 
 
 export class MapAttendee {
 
     constructor(config, http) {
         this.config = config;
-
-        http.configure(config => {
-            config
-                .useStandardConfiguration()
-                .withBaseUrl('http://meetup.wildesoft.net/')
-        });
-
-        this.http = http;
-
     }
 
     fill(users) {
 
-        if (this.config.current.attendees.length == 0) {
+        //if (this.config.current.attendees.length == 0) {
             var i = 0;
+            this.shuffle(users);
             users.forEach(function (user) {
                 this.config.current.attendees.push(
                     {
@@ -38,8 +29,7 @@ export class MapAttendee {
                     }
                     )
             }, this);
-            this.shuffle(this.config.current.attendees);
-        }
+        //}
     }
 
     shuffle(array) {

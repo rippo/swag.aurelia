@@ -3,10 +3,9 @@
 import Modernizr from './pastry.kit';
 import $ from 'jquery';
 
-
 export class Carousel3d {
 
-    constructor() {
+    constructor(eventAggregator) {
         this.carousel = null;   
         this.carouselContainer = null;
     }
@@ -100,14 +99,13 @@ export class Carousel3d {
             this.carousel.panelCount = count;
             this.carousel.modify();
 
-            setTimeout(function () {
+            setTimeout(() => {
                 document.body.addClassName('ready');
             }, 0);
 
         };
 
         this.init(count);
-
 
     }
 };

@@ -15,6 +15,7 @@ export class Attendees {
         this.eventAggregator = eventAggregator;
         this.config = config;
         this.mapAttendee = mapAttendee;
+        this.loading = true;
 
         http.configure(config => {
             config
@@ -23,13 +24,17 @@ export class Attendees {
         });
         this.http = http;
 
-        this.carousel3d = new Carousel3d();
+        this.carousel3d = new Carousel3d(this.eventAggregator);
         this.lastWinPosition = 0;
-        //this.mapAttendee = mapAttendee;
         
         this.attendeeList = [];
 
         eventAggregator.subscribe("swag.clicked", () => {
+            if (this.loading) {
+                this.loading = false;
+                eventAggregator.publish("carousel.rendered");
+            }
+            
             var nextAttendeeWon = this.getRandomWinner();
 
             if (nextAttendeeWon !== null) {
@@ -62,6 +67,17 @@ export class Attendees {
             this.attendeeList[winner.position].swagThing = null;
         });
 
+        eventAggregator.subscribe("carousel.rendered", () => {
+            //trigger when transition ended
+            var transEndEventName = ('WebkitTransition' in document.documentElement.style) ? 'webkitTransitionEnd' : 'transitionend';
+
+            document.getElementById("attendeeCarousel").addEventListener(transEndEventName, (event) => {
+                //console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
+                this.carousel3d.won(this.lastWinPosition);
+                this.countUnwonAttendees();
+            });
+        })
+
     }
 
     attached() {
@@ -71,33 +87,18 @@ export class Attendees {
             return this.http.fetch('api/attendees')
                 .then(response => response.json())
                 .then(users => {
-                     this.mapAttendee.fill(users);
+                    this.mapAttendee.fill(users);
 
                     this.attendeeList = this.config.current.attendees;
+                    
+                    //it takes a small amount of time to render the attendess list. would love a callback to know
+                    //  when rendering has completed! 
                     setTimeout(() => {
                         this.carousel3d.start(this.attendeeList.length, "attendeeCarousel");
-                        
-                        //trigger when transition ended
-                        var transEndEventName = ('WebkitTransition' in document.documentElement.style) ? 'webkitTransitionEnd' : 'transitionend';
-
-                        document.getElementById("attendeeCarousel").addEventListener(transEndEventName, (event) => {
-                            //console.log("attendee carousel ended, last winner is " + this.lastWinPosition);
-                            this.carousel3d.won(this.lastWinPosition);
-                            this.countUnwonAttendees();    
-                        });
-                        
-                        
                     }, 5);
 
-                    // this.taskQueue.queueMicroTask(() => {
-                    //     console.log(this.attendeeList.length);
-                    // });
-
-                    //console.log("fi");
-                    
                 });
         }
-
 
     }
 
@@ -138,7 +139,7 @@ export class Attendees {
             return (a.won === false)
         });
 
-        console.log(list.length);
+        //console.log(list.length);
 
         if (list.length === 0)
             this.eventAggregator.publish('no.winners.or.swag.left', true);
